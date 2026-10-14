@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELITE FOOTBALL 26 - ROBOT LEAGUE</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="gameContainer"></div>
+
+<div class="ui">
+  <div class="top-bar">
+    <div class="logo">ELITE FOOTBALL 26 // ROBOT LEAGUE</div>
+    <div class="score-box">
+      <div class="score"><span id="scoreA">0</span> - <span id="scoreB">0</span></div>
+      <div class="time" id="gameTime">00:00</div>
+      <div class="cam-info" id="camInfo">CÁMARA CENITAL [A/D mover]</div>
+    </div>
+  </div>
+
+  <div class="qr-panel" id="qrPanel">
+    <h3>📱 CONECTA TU CELULAR COMO MANDO</h3>
+    <div class="qr-wrap">
+      <canvas id="qrCanvas" width="200" height="200"></canvas>
+      <img id="qrImg" style="display:none;width:200px;height:200px;border-radius:8px" />
+    </div>
+    <div class="room-id" id="roomIdDisplay">ELITE-0000</div>
+    <div class="room-label">ID de sala • Escanea el QR</div>
+    <div class="link-preview" id="linkPreview"></div>
+    <button class="btn btn-primary" id="btnCopyLink">📋 Copiar Link del Mando</button>
+    <button class="btn btn-secondary" id="btnNewQR">🔄 Generar Nuevo QR</button>
+    <button class="btn btn-secondary" id="btnOpenController">🎮 Abrir Mando Aquí</button>
+    <div class="status"><div class="dot" id="connDot"></div><span id="connText">● Esperando mando...</span></div>
+  </div>
+
+  <div class="controls-hint">
+    <b>PC:</b> WASD mover • X pase • C tiro • SHIFT sprint • Q cambio • E entrada<br>
+    <b>Cámara:</b> A/D mueve lateral • R resetea<br>
+    <b>Celular:</b> Escanea QR → Mando consola
+  </div>
+</div>
+
+<div class="main-menu" id="mainMenu">
+  <div class="menu-title">ELITE<br>FOOTBALL<br>26</div>
+  <div class="menu-sub">ROBOT LEAGUE • CENITAL EDITION</div>
+  <div class="menu-grid">
+    <button class="menu-btn primary" id="btnKickOff">▶ KICK OFF 3D</button>
+    <button class="menu-btn" id="btnTorneo">🏆 TORNEO CYBER</button>
+    <button class="menu-btn" id="btnRobots">🤖 ROBOTS</button>
+    <button class="menu-btn" id="btnAjustes">⚙️ AJUSTES</button>
+  </div>
+  <div class="menu-note">Cámara cenital estática que se desplaza lateralmente • Robots con pistones animados</div>
+</div>
+
+<div class="team-select" id="teamSelect">
+  <h2>SELECCIONA TU ESCUADRA ROBOT</h2>
+  <div class="team-grid" id="teamGrid"></div>
+  <button class="btn btn-primary" id="btnStartMatch">INICIAR PARTIDO →</button>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><h3 id="modalTitle"></h3><p id="modalText"></p><button class="btn btn-primary" id="modalClose">ENTENDIDO</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

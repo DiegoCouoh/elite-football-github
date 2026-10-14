@@ -1,0 +1,48 @@
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080a12;color:#fff;font-family:'Inter',sans-serif;overflow:hidden;overscroll-behavior:none}
+#gameContainer{position:relative;width:100vw;height:100vh}
+canvas{display:block}
+.ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.ui > *{pointer-events:auto}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(90deg,rgba(0,0,0,0.85),rgba(20,20,40,0.7));backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,255,255,0.25)}
+.logo{font-family:'Orbitron',monospace;font-weight:800;font-size:16px;letter-spacing:2px;background:linear-gradient(90deg,#00ffff,#ff00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.score-box{display:flex;gap:14px;align-items:center}
+.score{font-family:'Orbitron';font-size:18px;font-weight:800}
+.time{font-size:13px;background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:20px}
+.cam-info{font-size:10px;opacity:0.6;background:rgba(0,255,255,0.15);padding:4px 8px;border-radius:10px;border:1px solid rgba(0,255,255,0.2)}
+.qr-panel{position:absolute;right:16px;top:70px;width:300px;background:rgba(10,12,25,0.93);backdrop-filter:blur(20px);border:1px solid rgba(0,255,255,0.35);border-radius:16px;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+.qr-panel h3{font-family:'Orbitron';font-size:12px;letter-spacing:1px;margin-bottom:10px;color:#00ffff}
+.qr-wrap{background:#fff;padding:10px;border-radius:12px;display:flex;justify-content:center;align-items:center;margin-bottom:12px}
+#qrCanvas{width:200px;height:200px}
+.room-id{font-family:'Orbitron';font-size:20px;text-align:center;letter-spacing:2px;margin:8px 0;color:#ff00ff;font-weight:800}
+.room-label{font-size:11px;text-align:center;opacity:0.6;margin-bottom:6px}
+.link-preview{font-size:9px;word-break:break-all;opacity:0.5;text-align:center;margin-bottom:8px;background:rgba(0,0,0,0.3);padding:6px;border-radius:6px}
+.btn{width:100%;padding:10px;border-radius:10px;border:none;font-weight:600;cursor:pointer;transition:all 0.2s;margin-bottom:8px;font-size:13px}
+.btn-primary{background:linear-gradient(90deg,#00ffff,#0088ff);color:#000}
+.btn-secondary{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.18)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.15)}
+.status{display:flex;align-items:center;gap:8px;font-size:11px;margin-top:8px;padding:8px;background:rgba(0,0,0,0.35);border-radius:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ff4444;animation:pulse 1.5s infinite}
+.dot.connected{background:#00ff88;box-shadow:0 0 10px #00ff88}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.controls-hint{position:absolute;left:16px;bottom:16px;background:rgba(0,0,0,0.72);padding:12px;border-radius:12px;font-size:11px;line-height:1.6;border:1px solid rgba(255,255,255,0.12);max-width:300px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#00ffff;color:#000;padding:12px 20px;border-radius:30px;font-weight:700;font-size:13px;z-index:999;transition:transform 0.3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.main-menu{position:absolute;inset:0;background:radial-gradient(ellipse at center,#1a1a3a 0%,#080a12 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20}
+.menu-title{font-family:'Orbitron';font-size:48px;font-weight:800;text-align:center;line-height:1.05;margin-bottom:8px;background:linear-gradient(90deg,#00ffff,#ff00ff,#ffff00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.menu-sub{opacity:0.6;margin-bottom:28px;letter-spacing:3px;font-size:11px}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:340px}
+.menu-btn{padding:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:14px;color:#fff;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Orbitron';font-size:12px;letter-spacing:1px}
+.menu-btn:hover{background:rgba(0,255,255,0.14);border-color:#00ffff;transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,255,255,0.2)}
+.menu-btn.primary{grid-column:span 2;background:linear-gradient(90deg,#00ffff,#0088ff);color:#000;border:none;font-size:15px}
+.menu-note{margin-top:18px;font-size:10px;opacity:0.4;text-align:center;max-width:340px;line-height:1.4}
+.team-select{position:absolute;inset:0;background:#080a12;z-index:21;display:none;overflow:auto;padding:20px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:18px}
+.team-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s}
+.team-card:hover{border-color:#00ffff;transform:translateY(-3px)}
+.team-card.selected{border-color:#00ffff;background:rgba(0,255,255,0.14);box-shadow:0 0 20px rgba(0,255,255,0.25)}
+.team-shield{width:50px;height:50px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-weight:800;font-size:16px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.82);display:none;align-items:center;justify-content:center;z-index:50}
+.modal-box{background:#151525;border:1px solid rgba(0,255,255,0.3);border-radius:16px;padding:24px;max-width:360px;text-align:center}
+@media(max-width:768px){.qr-panel{width:92%;right:4%;top:auto;bottom:10px}.menu-title{font-size:32px}.controls-hint{display:none}}

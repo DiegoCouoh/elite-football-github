@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ELITE CONTROLLER</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none}
+body{background:radial-gradient(ellipse,#1a1a2e,#080a12);color:#fff;font-family:'Inter',sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column}
+.header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(0,0,0,0.4);border-bottom:1px solid rgba(0,255,255,0.2)}
+.logo{font-family:'Orbitron';font-size:13px}
+.room{font-family:'Orbitron';color:#00ffff;font-size:12px}
+.status{font-size:11px;padding:6px 12px;background:rgba(0,255,255,0.2);border-radius:20px}
+.layout{display:flex;flex:1;align-items:center;justify-content:space-around;gap:10px;padding:10px}
+.left{flex:1;display:flex;flex-direction:column;align-items:center}
+.joy-area{position:relative;width:160px;height:160px;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.15);border-radius:50%;margin:10px}
+.joy-stick{position:absolute;width:64px;height:64px;background:linear-gradient(135deg,#00ffff,#0088ff);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 4px 20px rgba(0,255,255,0.5)}
+.right{flex:1;display:flex;flex-direction:column;align-items:center}
+.ctrl-pad{position:relative;width:200px;height:200px;margin:10px}
+.btn{position:absolute;width:58px;height:58px;border-radius:50%;border:none;font-weight:800;font-family:'Orbitron';cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,0.4);transition:transform 0.08s}
+.btn:active{transform:scale(0.88)}
+.btn.a{background:#00ff88;color:#000;left:50%;top:50%;transform:translate(-50%,-50%)}
+.btn.b{background:#ff4444;color:#fff;right:0;top:50%;transform:translateY(-50%)}
+.btn.x{background:#4488ff;color:#fff;left:0;top:50%;transform:translateY(-50%)}
+.btn.y{background:#ffcc00;color:#000;left:50%;top:0;transform:translateX(-50%)}
+.triggers{display:flex;gap:10px;margin-top:10px}
+.trig{padding:10px 16px;border-radius:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:600}
+.power{width:90%;height:10px;background:rgba(255,255,255,0.12);border-radius:5px;overflow:hidden;margin-top:12px}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,#00ff88,#ffff00,#ff4444);transition:width 0.05s}
+.hint{font-size:10px;opacity:0.5;text-align:center;margin-top:8px}
+.back{margin:10px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;width:92%;align-self:center}
+</style>
+</head>
+<body>
+<div class="header">
+  <div><div class="logo">ELITE CONTROLLER</div><div class="room" id="roomDisplay">ROOM: ----</div></div>
+  <div class="status" id="status">● Conectando...</div>
+</div>
+<div class="layout">
+  <div class="left">
+    <div style="font-size:10px;opacity:0.6">JOYSTICK • MOVER + CÁMARA</div>
+    <div class="joy-area" id="joyArea"><div class="joy-stick" id="joyStick"></div></div>
+    <div class="triggers"><button class="trig" id="trigL1">L1 CAMBIO</button><button class="trig" id="trigR1">R1 ENTRADA</button></div>
+    <div class="hint">Desliza para mover jugador<br>Arrastra al borde para mover cámara lateral</div>
+  </div>
+  <div class="right">
+    <div style="font-size:10px;opacity:0.6">BOTONES • ACCIÓN</div>
+    <div class="ctrl-pad">
+      <button class="btn a" data-act="pass">A</button>
+      <button class="btn b" data-act="shoot">B</button>
+      <button class="btn x" data-act="long">X</button>
+      <button class="btn y" data-act="sprint">Y</button>
+    </div>
+    <div style="font-size:9px;opacity:0.7">A Pase • B Tiro • X Largo • Y Sprint</div>
+    <div class="power"><div class="fill" id="powerFill"></div></div>
+  </div>
+</div>
+<button class="back" id="btnBack">← Volver al juego</button>
+<script>
+const params=new URLSearchParams(location.search);
+let ROOM=params.get('room')||localStorage.getItem('elite_room')||'ELITE-0000';
+document.getElementById('roomDisplay').textContent='ROOM: '+ROOM;
+let input={x:0,y:0,buttons:{pass:false,shoot:false,long:false,sprint:false,change:false,tackle:false},power:0};
+const joyArea=document.getElementById('joyArea'), joyStick=document.getElementById('joyStick');
+let active=false;
+function moveJoy(cx,cy){
+  const r=joyArea.getBoundingClientRect();
+  let x=cx-r.left-r.width/2, y=cy-r.top-r.height/2;
+  const d=Math.sqrt(x*x+y*y), max=55;
+  if(d>max){x=x/d*max; y=y/d*max}
+  joyStick.style.transform=`translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+  input.x=x/max; input.y=y/max;
+}
+joyArea.addEventListener('touchstart',e=>{active=true; moveJoy(e.touches[0].clientX,e.touches[0].clientY); e.preventDefault()},{passive:false});
+joyArea.addEventListener('touchmove',e=>{if(active) moveJoy(e.touches[0].clientX,e.touches[0].clientY); e.preventDefault()},{passive:false});
+joyArea.addEventListener('touchend',()=>{active=false; joyStick.style.transform='translate(-50%,-50%)'; input.x=0;input.y=0});
+joyArea.addEventListener('mousedown',e=>{active=true; moveJoy(e.clientX,e.clientY)});
+window.addEventListener('mousemove',e=>{if(active) moveJoy(e.clientX,e.clientY)});
+window.addEventListener('mouseup',()=>{active=false; joyStick.style.transform='translate(-50%,-50%)'; input.x=0;input.y=0});
+
+document.querySelectorAll('.btn').forEach(b=>{
+  const act=b.dataset.act;
+  const down=()=>{input.buttons[act]=true; if(act==='shoot'){let p=0; const iv=setInterval(()=>{p=Math.min(100,p+5); document.getElementById('powerFill').style.width=p+'%'; input.power=p/100; if(!input.buttons.shoot) clearInterval(iv)},40)} if(navigator.vibrate) navigator.vibrate(20); b.style.transform+=' scale(0.88)'};
+  const up=()=>{input.buttons[act]=false; if(act==='shoot'){document.getElementById('powerFill').style.width='0%'; input.power=0} b.style.transform=b.style.transform.replace(' scale(0.88)','')};
+  b.addEventListener('touchstart',e=>{down(); e.preventDefault()},{passive:false});
+  b.addEventListener('touchend',up);
+  b.addEventListener('mousedown',down);
+  b.addEventListener('mouseup',up);
+});
+document.getElementById('trigL1').addEventListener('touchstart',()=>input.buttons.change=true);
+document.getElementById('trigL1').addEventListener('touchend',()=>input.buttons.change=false);
+document.getElementById('trigR1').addEventListener('touchstart',()=>input.buttons.tackle=true);
+document.getElementById('trigR1').addEventListener('touchend',()=>input.buttons.tackle=false);
+document.getElementById('trigL1').onmousedown=()=>input.buttons.change=true;
+document.getElementById('trigL1').onmouseup=()=>input.buttons.change=false;
+document.getElementById('trigR1').onmousedown=()=>input.buttons.tackle=true;
+document.getElementById('trigR1').onmouseup=()=>input.buttons.tackle=false;
+
+setInterval(()=>{
+  const payload={x:input.x,y:input.y,buttons:input.buttons,power:input.power,t:Date.now()};
+  localStorage.setItem('elite_ctrl_'+ROOM, JSON.stringify(payload));
+  // Try PeerJS if available (will be added in main page)
+  try{if(window.parent && window.parent!==window){window.parent.postMessage({type:'elite_input', payload}, '*')}}catch{}
+},50);
+document.getElementById('status').textContent='● Mando Activo - Local';
+document.getElementById('btnBack').onclick=()=>{location.href=location.href.split('?')[0].replace('controller.html','index.html')};
+</script>
+</body>
+</html>
